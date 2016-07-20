@@ -33,10 +33,18 @@ The NCAR Climate Language (NLC) library of command line tools to work on climate
 ### Cylc
 The Cylc workflow engine orchestrates the entire eWaterCycle system. Install Cylc from https://cylc.github.io/cylc/. Cylc also needs python, just as PCRGlobWB.
 
-## installing and configuring eWaterCycle
-FOOBAR
-
 ## getting data.
+the eWaterCycle has three main data inputs that it needs. Two change on daily basis: the weather forecast (GEFS from NCEP), observations of soil moisture (SM-DAS from HSAF). The third data input is a set of fixed maps with parameters that PCRGlobWB needs.
+### GEFS
+The GEFS weather forecast is downloaded automatically by the pre-processor and no further action is needed.
+
+### SM-DAS
+The SM-DAS soil moisture observations are also downloaded automatically. However, one has to register with HSAF to be allowed to download the data. To register, follow the stept on http://hsaf.meteoam.it/user-registration.php. The username and password provided to you are needed in the installation step, below.
+
+### PCRGlobWB input
+When running PCRGlobWB globally, the input files needed can be downloaded from FOOBAR SITE. 
+
+## installing and configuring eWaterCycle
 FOOBAR
 
 ## running  eWaterCycle
