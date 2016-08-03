@@ -60,3 +60,9 @@ target/
 
 #Ipython Notebook
 .ipynb_checkpoints
+
+#Cylc Passphrase files
+passphrase
+
+#Cylc processed files
+*.rc.processed

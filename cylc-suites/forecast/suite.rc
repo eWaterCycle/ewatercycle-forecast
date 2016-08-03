@@ -1,0 +1,48 @@
+title = "eWaterCycle Forecast"
+[cylc]
+    cycle point format = %Y-%m-%d
+
+[scheduling]
+   initial cycle point = 2016-08-01
+   final cycle point = 2016-08-10
+   [[special tasks]]
+	clock-trigger = download_gfs(PT2H), download_gefs(PT2H), download_hsaf(PT10H)
+   [[dependencies]]
+      [[[R1]]]  # Initial cycle point.
+	 # get initial state from somewhere (preferable spinup of sorts)
+         graph = load_initial_state => run_forecast
+      [[[P1D]]] # Main forecast workflow 
+         graph = """
+		#the forecast depends on initial state from the previous forecast
+		run_forecast[-P1D] => run_forecast
+
+		#we use high-res gfs forcings
+		download_gfs => preprocess_deterministic_forcing
+
+		#and the gefs ensemble for variation across ensemble members
+		download_gefs => preprocess_ensemble_forcing => run_forecast
+
+		#we upscale the ensemble using the deterministic high-res focing
+		preprocess_deterministic_forcing => preprocess_ensemble_forcing
+		download_hsaf => preprocess_observations => run_forecast
+		run_forecast => postprocess => archive_result
+		postprocess => upload_result
+	 """
+
+[runtime]
+   [[root]]  # Inherited by all tasks.
+      script = echo-env.sh
+   [[model]]
+      script = echo "my FOOD is $FOOD"; sleep 10
+      [[[environment]]]
+         FOOD = icecream
+      [[[remote]]]
+         host = int2-bb.cartesius.surfsara.nl
+
+[visualization]
+    #default node attributes = "style=filled", "shape=ellipse"
+    [[node attributes]]
+    #    prep = "fillcolor=#00c798"
+    #    stop = "fillcolor=#ffcc00"
+    #    model = "fillcolor=#00b4fd"
+    #    post = "fillcolor=#ff5966"
