@@ -1,48 +1,86 @@
 title = "eWaterCycle Forecast"
 [cylc]
-    cycle point format = %Y-%m-%d
+#    cycle point format = %Y-%m-%d
+UTC mode = True
 
 [scheduling]
-   initial cycle point = 2016-08-01
-   final cycle point = 2016-08-10
-   [[special tasks]]
-	clock-trigger = download_gfs(PT2H), download_gefs(PT2H), download_hsaf(PT10H)
-   [[dependencies]]
-      [[[R1]]]  # Initial cycle point.
-	 # get initial state from somewhere (preferable spinup of sorts)
-         graph = load_initial_state => run_forecast
-      [[[P1D]]] # Main forecast workflow 
-         graph = """
-		#the forecast depends on initial state from the previous forecast
-		run_forecast[-P1D] => run_forecast
+    initial cycle point = 2016-08-01
+    final cycle point = 2016-08-10
+    [[special tasks]]
+        clock-trigger = download_gfs(PT2H), download_gefs(PT2H), download_hsaf(PT10H)
+    [[dependencies]]
+        [[[R1]]]  # Initial cycle point.
+            # get initial state from somewhere (preferable spinup of sorts)
+            graph = load_initial_state => run_forecast
+        [[[P1D]]] # Main forecast workflow 
+            graph = """
+                #the forecast depends on initial state from the previous forecast
+                run_forecast[-P1D] => run_forecast
 
-		#we use high-res gfs forcings
-		download_gfs => preprocess_deterministic_forcing
+                #we use high-res gfs forcings
+                download_gfs => preprocess_deterministic_forcing
 
-		#and the gefs ensemble for variation across ensemble members
-		download_gefs => preprocess_ensemble_forcing => run_forecast
+                #and the gefs ensemble for variation across ensemble members
+                download_gefs => preprocess_ensemble_forcing => run_forecast
 
-		#we upscale the ensemble using the deterministic high-res focing
-		preprocess_deterministic_forcing => preprocess_ensemble_forcing
-		download_hsaf => preprocess_observations => run_forecast
-		run_forecast => postprocess => archive_result
-		postprocess => upload_result
-	 """
+                #we upscale the ensemble using the deterministic high-res focing
+                preprocess_deterministic_forcing => preprocess_ensemble_forcing
+                download_hsaf => preprocess_observations => run_forecast
+                run_forecast => create_result => archive_result
+                create_result => upload_result
+            """
 
 [runtime]
-   [[root]]  # Inherited by all tasks.
-      script = echo-env.sh
-   [[model]]
-      script = echo "my FOOD is $FOOD"; sleep 10
-      [[[environment]]]
-         FOOD = icecream
-      [[[remote]]]
-         host = int2-bb.cartesius.surfsara.nl
+    [[root]]  # Inherited by all tasks.
+        script = fail.sh
+        pre-script = pre-script.sh
+        [[[environment]]]
+            #Date formats used in almost all scripts
+            ISO_DATE_EXT = $(cylc cycle-point --template=CCYY-MM-DD)
+            ISO_DATE = $(cylc cycle-point --template=CCYYMMDD)
+            REFERENCE_CYCLE = $(cylc util cycletime --offset-days=-1)
+            IO_DIR = $CYLC_SUITE_SHARE_DIR/$CYLC_TASK_CYCLE_POINT
+            REF_IO_DIR = $CYLC_SUITE_SHARE_DIR/$REFERENCE_CYCLE
+
+    [[DOWNLOAD]]
+    [[download_gfs, download_gefs, download_hsaf]]
+        inherit = DOWNLOAD
+
+    [[download_hsaf]]
+        script = download_hsaf.sh
+        [[[environment]]]
+            #load credentials from file (format should be e.mail%40domain.com:p3ssw3rd)
+            CREDENTIALS = $(cat ~/.hsaf_credentials)
+
+    [[download_gfs]]
+        script = download_gfs.sh
+
+    [[PREPROCESS]]
+    [[preprocess_deterministic_forcing, preprocess_ensemble_forcing, preprocess_observations]]
+        inherit = PREPROCESS
+        [[[environment]]]
+            MODEL_GRID_MASK = $CYLC_SUITE_DEF_PATH/grids/30min.grid.model.mask.nc
+
+    [[preprocess_observations]]
+        script = preprocess_observations.sh
+
+    [[preprocess_deterministic_forcing]]
+        script = preprocess_deterministic_forcing.sh
+
+    [[FORECAST]]
+    [[run_forecast]]
+        inherit = FORECAST
+
+    [[POSTPROCESS]]
+    [[create_result, upload_result, archive_result]]
+        inherit = POSTPROCESS
+
 
 [visualization]
-    #default node attributes = "style=filled", "shape=ellipse"
+    default node attributes = "style=filled", "shape=ellipse"
     [[node attributes]]
-    #    prep = "fillcolor=#00c798"
-    #    stop = "fillcolor=#ffcc00"
-    #    model = "fillcolor=#00b4fd"
-    #    post = "fillcolor=#ff5966"
+        load_initial_state = "fillcolor=#d99aff"
+        DOWNLOAD = "fillcolor=#00c798"
+        PREPROCESS = "fillcolor=#ffcc00"
+        FORECAST = "fillcolor=#00b4fd"
+        POSTPROCESS = "fillcolor=#ff5966"
