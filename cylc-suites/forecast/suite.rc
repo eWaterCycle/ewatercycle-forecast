@@ -4,8 +4,8 @@ title = "eWaterCycle Forecast"
 UTC mode = True
 
 [scheduling]
-    initial cycle point = 2016-08-01
-    final cycle point = 2016-08-10
+    initial cycle point = 2016-08-08
+    final cycle point = 2016-08-08
     [[special tasks]]
         clock-trigger = download_gfs(PT2H), download_gefs(PT2H), download_hsaf(PT10H)
     [[dependencies]]
@@ -25,7 +25,15 @@ UTC mode = True
 
                 #we upscale the ensemble using the deterministic high-res focing
                 preprocess_deterministic_forcing => preprocess_ensemble_forcing
+
+                #we assimilate soil moisture into our model
                 download_hsaf => preprocess_observations => run_forecast
+
+                #we create config files for the model and da system
+                setup_pcrglobwb_model => run_forecast
+                setup_openda => run_forecast
+
+                #after the forecast, we create the final output, and archive/upload
                 run_forecast => create_result => archive_result
                 create_result => upload_result
             """
@@ -45,6 +53,7 @@ UTC mode = True
     [[DOWNLOAD]]
     [[download_gfs, download_gefs, download_hsaf]]
         inherit = DOWNLOAD
+        pre-script = pre-script-keep-workdir.sh
 
     [[download_hsaf]]
         script = download_hsaf.sh
@@ -54,6 +63,9 @@ UTC mode = True
 
     [[download_gfs]]
         script = download_gfs.sh
+
+    [[download_gefs]]
+        script = download_gefs.sh
 
     [[PREPROCESS]]
     [[preprocess_deterministic_forcing, preprocess_ensemble_forcing, preprocess_observations]]
@@ -67,9 +79,21 @@ UTC mode = True
     [[preprocess_deterministic_forcing]]
         script = preprocess_deterministic_forcing.sh
 
+    [[preprocess_ensemble_forcing]]
+        script = preprocess_ensemble_forcing.sh
+
     [[FORECAST]]
-    [[run_forecast]]
+    [[setup_pcrglobwb_model, setup_openda, run_forecast]]
         inherit = FORECAST
+
+    [[setup_pcrglobwb_model]]
+        script = setup_pcrglobwb_model
+
+    [[setup_openda]]
+        script = setup_openda
+
+    [[run_forecast]]
+        script = run_forecast
 
     [[POSTPROCESS]]
     [[create_result, upload_result, archive_result]]

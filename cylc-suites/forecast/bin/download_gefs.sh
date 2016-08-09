@@ -7,19 +7,24 @@
 #stop the script if we use an unset variable, or a command fails
 set -o nounset -o errexit
 
-url="http://nomads.ncep.noaa.gov/cgi-bin/filter_gfs_hd.pl"
-common_parameters="lev_surface=on&leftlon=0&rightlon=360&toplat=90&bottomlat=-90&var_APCP=on&var_TMP=on&dir=%2Fgfs.${ISO_DATE}00"
+url="http://nomads.ncep.noaa.gov/cgi-bin/filter_gens.pl"
+common_parameters="lev_surface=on&leftlon=0&rightlon=360&toplat=90&bottomlat=-90&var_APCP=on&var_TMP=on&dir=%2Fgefs.${ISO_DATE}%2F00%2Fpgrb2"
 
+#make sure file does not exist, as we append to it
 rm -f urls.txt
 
-for hour in {000..240..3} {252..384..12};
+for ensembleMember in {01..20}
 do
-    echo "${url}?${common_parameters}&file=gfs.t00z.pgrb2.0p25.f${hour}" >> urls.txt
+    #create url for each hour of forecast result
+    #odd range definition due to odd zero-padding (not 006, but 06)
+    for hour in 00 06 {12..192..6}
+    do
+        echo "${url}?${common_parameters}&file=gep${ensembleMember}.t00z.pgrb2f${hour}" >> urls.txt
+    done
 done
-
 
 #single wget command to download all the urls
 wget --continue --content-disposition --trust-server-names -i urls.txt
 
-mkdir -p $IO_DIR/download/gfs
-cp gfs.t00z.pgrb2.0p25.* $IO_DIR/download/gfs
+mkdir -p $IO_DIR/download/gefs
+cp gep??.t00z.pgrb2f* $IO_DIR/download/gefs

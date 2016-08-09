@@ -82,10 +82,12 @@ cdo mergetime tempf*.grib2 forcingTempInput.grib2
 # -f nc finally, this option makes sure that the output is written as NetCDF file
 cdo -f nc remapbil,${MODEL_GRID_MASK} -setmissval,1.0E20 -setname,temperature -settime,00:00:00 -dayavg forcingTempInput.grib2 forcingTempDailyOut-K.nc
 
-#create a version with the temperature in Celcius as well (needed for PCRGlobWB)
+#create a version with the temperature in Celcius as well
 cdo -subc,273.15 -setunit,C forcingTempDailyOut-K.nc forcingTempDailyOut.nc
 
 # copy output to shared folder
-cp forcingPrecipDailyOut.nc $IO_DIR/preprocess/
-cp forcingTempDailyOut.nc $IO_DIR/preprocess/
-cp forcingTempDailyOut-K.nc $IO_DIR/preprocess/
+
+mkdir -p $IO_DIR/preprocess/deterministic/
+cp forcingPrecipDailyOut.nc $IO_DIR/preprocess/deterministic/
+cp forcingTempDailyOut.nc $IO_DIR/preprocess/deterministic/
+cp forcingTempDailyOut-K.nc $IO_DIR/preprocess/deterministic/
