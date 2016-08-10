@@ -11,11 +11,11 @@ UTC mode = True
     [[dependencies]]
         [[[R1]]]  # Initial cycle point.
             # get initial state from somewhere (preferable spinup of sorts)
-            graph = load_initial_state => run_forecast
+            graph = bootstrap_initial_state => run_forecast
         [[[P1D]]] # Main forecast workflow 
             graph = """
                 #the forecast depends on initial state from the previous forecast
-                run_forecast[-P1D] => run_forecast
+                create_result[-P1D] => load_initial_state
 
                 #we use high-res gfs forcings
                 download_gfs => preprocess_deterministic_forcing
@@ -30,8 +30,8 @@ UTC mode = True
                 download_hsaf => preprocess_observations => run_forecast
 
                 #we create config files for the model and da system
-                setup_pcrglobwb_model => run_forecast
-                setup_openda => run_forecast
+                create_pcrglobwb_config => run_forecast
+                create_openda_config => run_forecast
 
                 #after the forecast, we create the final output, and archive/upload
                 run_forecast => create_result => archive_result
@@ -83,17 +83,28 @@ UTC mode = True
         script = preprocess_ensemble_forcing.sh
 
     [[FORECAST]]
-    [[setup_pcrglobwb_model, setup_openda, run_forecast]]
+    [[create_pcrglobwb_config, create_openda_config, run_forecast]]
         inherit = FORECAST
 
-    [[setup_pcrglobwb_model]]
-        script = setup_pcrglobwb_model
+    [[create_pcrglobwb_config]]
+        script = create_pcrglobwb_config.py
 
-    [[setup_openda]]
-        script = setup_openda
+        [[[environment]]]
+            CONFIG_TEMPLATE = $CYLC_SUITE_DEF_PATH/pcrglobwb_config_templates/default-30min.ini
+            STARTTIME = $ISO_DATE_EXT
+            ENDTIME = $(cylc util cycletime --offset-days=8 --template=CCYY-MM-DD)
+
+            #this location should vary from one installation to the next
+            INPUTDIR = $HOME/hydroworld
+
+    [[create_openda_config]]
+        script = create_openda_config.py
+
+        [[[environment]]]
+            CONFIG_TEMPLATE_DIR = $CYLC_SUITE_DEF_PATH/openda_configurations/openda_config_template_05
 
     [[run_forecast]]
-        script = run_forecast
+        script = run_forecast.sh
 
     [[POSTPROCESS]]
     [[create_result, upload_result, archive_result]]

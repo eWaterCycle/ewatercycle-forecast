@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openDaApplication xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/openDaApplication.xsd">
+	<!-- specify type of observations and config file for observations -->
+	<stochObserver className="org.openda.observers.IoObjectStochObserver">
+		<workingDirectory>./stochObserver</workingDirectory>
+		<configFile>stochObserverConfig.xml</configFile>
+	</stochObserver>
+	<!-- specify type of stochModelFactory and config file for stochModelFactory -->
+	
+	<!--
+	<stochModelFactory className="org.openda.blackbox.wrapper.BBStochModelFactory">
+		<workingDirectory>./stochModel</workingDirectory>
+		<configFile>bbStochModelConfig.xml</configFile>
+	</stochModelFactory>
+	-->
+	
+	<stochModelFactory className="org.openda.models.threadModel.ThreadStochModelFactory">
+                <workingDirectory>./stochModel</workingDirectory>
+                <configFile>ThreadStochModel.xml</configFile>
+        </stochModelFactory>
+	
+	<!-- specify type of algorithm and config file for algorithm -->
+	<algorithm className="org.openda.algorithms.kalmanFilter.EnKF">
+		<workingDirectory>./algorithm</workingDirectory>
+		<configString>enkfSequentialAlgorithmConfig.xml</configString>
+	</algorithm>
+	<!--
+	<resultWriter className="org.openda.resultwriters.MatlabResultWriter">
+		<workingDirectory>.</workingDirectory>
+		<configFile>output.log.m</configFile>
+		<selection>
+			<doLog observer="true" model="true" algorithm="true" nonConfiguredItems="true"/>
+			    <resultItem id="D" doLog="true"/>
+                                                  <resultItem id="L_a" doLog="true"/>
+                                                  <resultItem id="L_f" doLog="true"/>
+                                                  <resultItem id="Ts" doLog="true"/>
+                                                  <resultItem id="U" doLog="true"/>
+                                                  <resultItem id="V" doLog="true"/>
+                                                  <resultItem id="chi" doLog="true"/>
+                                                  <resultItem id="hpht_plus_r" doLog="true"/>
+                                                  <resultItem id="k" doLog="true"/>
+                                                  <resultItem id="obs" doLog="true"/>
+                                                  <resultItem id="pred_f" doLog="true"/>
+                                                  <resultItem id="pred_a" doLog="true"/>
+                                                  <resultItem id="k_0" doLog="true"/>
+                                                  <resultItem id="resamplingIndices" doLog="true"/>
+                                                  <resultItem id="sqrt_r" doLog="true"/>
+                                                  <resultItem id="std_obs" doLog="true"/>
+                                                  <resultItem id="std_x_a" doLog="true"/>
+                                                  <resultItem id="std_x_f" doLog="true"/>
+                                                  <resultItem id="x_f_central" doLog="true"/>
+                                                  <resultItem id="x_a" doLog="true"/>
+                                                  <resultItem id="x_a_linear" doLog="true"/>
+                                                  <resultItem id="x_f" doLog="true"/>
+                                                  <resultItem id="xi" doLog="true"/>
+                                                  <resultItem id="xi_a" doLog="true"/>
+                                                  <resultItem id="xi_f" doLog="true"/>
+                                                  <resultItem id="concat" doLog="true"/>                 
+		</selection>
+	</resultWriter>
+	-->
+
+	
+</openDaApplication>

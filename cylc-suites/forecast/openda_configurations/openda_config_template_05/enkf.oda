@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openDaApplication xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/openDaApplication.xsd">
+	<!-- specify type of observations and config file for observations -->
+	<stochObserver className="org.openda.observers.IoObjectStochObserver">
+		<workingDirectory>./stochObserver</workingDirectory>
+		<configFile>stochObserverConfig.xml</configFile>
+	</stochObserver>
+	<!-- specify type of stochModelFactory and config file for stochModelFactory -->
+	<stochModelFactory className="org.openda.blackbox.wrapper.BBStochModelFactory">
+		<workingDirectory>./stochModel</workingDirectory>
+		<configFile>bbStochModelConfig.xml</configFile>
+	</stochModelFactory>
+	<!-- specify type of algorithm and config file for algorithm -->
+	<algorithm className="org.openda.algorithms.kalmanFilter.EnKF">
+		<workingDirectory>./algorithm</workingDirectory>
+		<configString>enkfSequentialAlgorithmConfig.xml</configString>
+	</algorithm>
+	<resultWriter className="org.openda.resultwriters.MatlabResultWriter">
+		<workingDirectory>.</workingDirectory>
+		<configFile>output.log.m</configFile>
+	</resultWriter>
+
+	
+</openDaApplication>
