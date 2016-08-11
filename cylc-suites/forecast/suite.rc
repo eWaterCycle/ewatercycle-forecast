@@ -85,9 +85,6 @@ UTC mode = True
         inherit = PREPROCESS
         [[[environment]]]
             MODEL_GRID_MASK = $CYLC_SUITE_DEF_PATH/grids/30min.grid.model.mask.nc
-	    #REMARK ROLF: If I understand correctly, we are (now) using the same MODEL_GRID_MASK for all
-	    #preprocess scripts. This is not correct: preprocess_observations needs anothee mask. By doing this
-	    #we are reducing the observation resolution to the forcing resolution.
 
     [[preprocess_observations]]
         script = preprocess_observations.sh
