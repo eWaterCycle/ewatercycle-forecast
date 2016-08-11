@@ -6,6 +6,7 @@
 #     IO_DIR, for input and output directory for this cycle point
 #     ISO_DATE and ISO_DATE_EXT, for date to process
 #     MODEL_GRID_MASK for size of grid to resize observations to, and mask to use (no need for observations at point for which there is no model (e.g. oceans)
+#          note that MODEL_GRID_MASK in this script does not need to point to the same mask as in the preprocess_deterministic_forcing.sh script.  
 
 #stop the script if we use an unset variable, or a command fails
 set -o nounset -o errexit

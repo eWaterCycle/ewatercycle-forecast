@@ -43,11 +43,8 @@ cdo mergetime precipf*.grib2 forcingPrecipInput.grib2
 # setmissvall,1.0e20f Set the missing value to 1.0e20 (float). The file will not have any missing value
 # but PCRGlobWB needs a _FillValue attribute.
 #
-# remapbill,${MODEL_GRID_MASK} Remaps the grid to that of the ${targetGrid} file. The downloaded files have a 
-# grid of 720 x 361 in stead of 720 x 360. Remapping is done using billinair interpolation.
-# 
 # -f nc finally, this option makes sure that the output is written as NetCDF file
-cdo -f nc remapbil,${MODEL_GRID_MASK} -setmissval,1.0E20 -setname,precipitation -daysum -settime,00:00:00 -setrtoc,-100,0.0,0.0 -mulc,0.001 -setunit,m.day-1  forcingPrecipInput.grib2 forcingPrecipDailyOut.nc
+cdo -f nc setmissval,1.0E20 -setname,precipitation -daysum -settime,00:00:00 -setrtoc,-100,0.0,0.0 -mulc,0.001 -setunit,m.day-1  forcingPrecipInput.grib2 forcingPrecipDailyOut.nc
 
 
 ## Temperature ##
@@ -76,11 +73,8 @@ cdo mergetime tempf*.grib2 forcingTempInput.grib2
 # setmissvall,1.0e20f Set the missing value to 1.0e20 (float). The file will not have any missing value
 # but PCRGlobWB needs a _FillValue attribute.
 #
-# remapbill,${MODEL_GRID_MASK} Remaps the grid to that of the ${MODEL_GRID_MASK file. The downloaded files have a 
-# grid of 720 x 361 in stead of 720 x 360. Remapping is done using billinair interpolation.
-# 
 # -f nc finally, this option makes sure that the output is written as NetCDF file
-cdo -f nc remapbil,${MODEL_GRID_MASK} -setmissval,1.0E20 -setname,temperature -settime,00:00:00 -dayavg forcingTempInput.grib2 forcingTempDailyOut-K.nc
+cdo -f nc setmissval,1.0E20 -setname,temperature -settime,00:00:00 -dayavg forcingTempInput.grib2 forcingTempDailyOut-K.nc
 
 #create a version with the temperature in Celcius as well
 cdo -subc,273.15 -setunit,C forcingTempDailyOut-K.nc forcingTempDailyOut.nc
