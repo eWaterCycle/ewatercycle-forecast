@@ -15,10 +15,14 @@ cp $ENSEMBLE_DIR/* .
 INITIAL_DIR=$IO_DIR/initial
 cp -r $INITIAL_DIR .
 
-#copy pcrglobwb config to current working directory
+#copy pcrglobwb config
+
+cp -r $PCRGLOBWB_MODEL_DIR PCR-GLOBWB
+
+mkdir model_template
 
 PCRGLOBWB_CONFIG=$IO_DIR/forecast/pcrglobwb_config.ini
-cp $PCRGLOBWB_CONFIG .
+cp $PCRGLOBWB_CONFIG model_template
 
 #copy openda config to current working directory
 OPENDA_CONFIG_DIR=$IO_DIR/forecast/openda_config
@@ -26,7 +30,7 @@ cp -r $OPENDA_CONFIG_DIR .
 
 #copy observations to openda observer folder
 OBSERVATION_FILE=$IO_DIR/preprocess/h14_$ISO_DATE.nc
-cp $OBSERVATION_FILE openda_config/stochObserver/h14_observations.nc
+cp $OBSERVATION_FILE openda_config/h14_observations.nc
 
 WORKDIR=$PWD
 

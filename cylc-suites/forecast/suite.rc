@@ -125,6 +125,9 @@ UTC mode = True
     [[run_forecast]]
         script = run_forecast.sh
 
+        [[[environment]]]
+        PCRGLOBWB_MODEL_DIR = $HOME/ewatercycle/PCR-GLOBWB
+
     [[POSTPROCESS]]
     [[create_result, upload_result, archive_cycle]]
         inherit = POSTPROCESS
