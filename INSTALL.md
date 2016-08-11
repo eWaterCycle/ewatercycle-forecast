@@ -45,7 +45,10 @@ The SM-DAS soil moisture observations are also downloaded automatically. However
 When running PCRGlobWB globally, the input files needed can be downloaded from FOOBAR SITE. 
 
 ## installing and configuring eWaterCycle
-FOOBAR
+
+- Add hsaf credentials in ~/.hsaf_credentials
+- Add bootstrap initial conditions in ~/ewatercycle/initial_conditions.tar.gz
+
 
 ## running  eWaterCycle
 FOOBAR
