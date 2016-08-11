@@ -14,5 +14,5 @@ mkdir -p $IO_DIR
 mkdir -p $IO_DIR/download
 mkdir -p $IO_DIR/preprocess
 mkdir -p $IO_DIR/forecast
-mkdir -p $IO_DIR/output
+mkdir -p $IO_DIR/postprocess
 
