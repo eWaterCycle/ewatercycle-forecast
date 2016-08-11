@@ -56,7 +56,7 @@ if __name__ == '__main__':
     #                  'ENDTIME': endtime, 'PRECIPITATIONFILE': precipitationfile, 'TEMPERATUREFILE': temperaturefile,
     #                  'INITIALCONDITIONSDIR': initialconditionsdir}
     #
-    # search_and_replace(config_template, result_file, areplacements)
+    # search_and_replace(config_template, result_file, replacements)
 
     io_output_dir = os.path.join(io_dir, 'forecast', result_dir)
 
