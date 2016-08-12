@@ -120,6 +120,9 @@ UTC mode = True
     [[create_pcrglobwb_config, create_openda_config, run_forecast]]
         inherit = FORECAST
 
+        [[[environment]]]
+            ENSEMBLE_MEMBER_COUNT = {{ ensemble_member_count }}
+
     [[create_pcrglobwb_config]]
         script = create_pcrglobwb_config.py
 
@@ -135,14 +138,15 @@ UTC mode = True
         script = create_openda_config.py
 
         [[[environment]]]
-            CONFIG_TEMPLATE_DIR = {{ openda_config_template_dir }}
+            OPENDA_CONFIG_TEMPLATE_DIR = {{ openda_config_template_dir }}
+            STATE_WRITE_TIME = ${ISO_DATE_EXT}0000
 
     [[run_forecast]]
         script = run_forecast.sh
 
         [[[environment]]]
-        PCRGLOBWB_MODEL_DIR = {{ pcrglobwb_model_dir }}
-        OPENDA_DIR = {{ openda_dir }}
+            PCRGLOBWB_MODEL_DIR = {{ pcrglobwb_model_dir }}
+            OPENDA_DIR = {{ openda_dir }}
 
     [[POSTPROCESS]]
     [[create_result, upload_result, archive_cycle]]

@@ -10,9 +10,10 @@
 {% set initial_cycle_point = "2016-08-08" %}
 {% set final_cycle_point = "2016-08-09" %}
 
-#How many ensemble members to use. Note: 21 is the only really valid value, as there are 21
-#GEFS ensemble members. Anything else only to be used for testing.
-%{ set ensemble_member_count = 21 %}
+# How many ensemble members to use. Note: 20 is the only really valid value,
+# as there are 20 GEFS ensemble members (and "special" ensemble member 0 which
+# we do not use). Anything else only to be used for testing.
+{% set ensemble_member_count = "20" %}
 
 #Where to get the initial state from at the initial cycle point
 #Bootstrap will fail when the previous day output state already exists.
@@ -22,7 +23,7 @@
 ## Forcing and Observations ##
 
 #hsaf credentials file (format should be e.mail%40domain.com:p3ssw3rd)
-{% set hsaf_credential_file = "#HOME/.hsaf_credentials" %}
+{% set hsaf_credential_file = "$HOME/.hsaf_credentials" %}
 
 #The observations are masked to get rid of observations at point for which
 #there is no model, and (if needed) scaled to reduce the number of observations
@@ -37,10 +38,10 @@
 
 #Model install location
 
-%{ set pcrglobwb_model_dir = "$HOME/ewatercycle/PCR-GLOBWB" %}
+{% set pcrglobwb_model_dir = "$HOME/ewatercycle/PCR-GLOBWB" %}
 
 #Location of configuration template
-{% set pcrglobwb_config_template = "$CYLC_SUITE_DEF_PATH/pcrglobwb_config_templates/default-30min.ini" %}
+{% set pcrglobwb_config_template = "$CYLC_SUITE_DEF_PATH/pcrglobwb_configs/template-30min.ini" %}
 
 #Location of dataset used in PCRGlobWB for parameters
 {% set hydroworld_location = "$HOME/ewatercylce/hydroworld" %}
@@ -50,5 +51,5 @@
 #lightly patched version of openda (see INSTALL.md)
 {% set openda_dir = "$HOME/ewatercycle/openda" %}
 
-{% set openda_config_template_dir = "$CYLC_SUITE_DEF_PATH/openda_configurations/openda_config_template_30" %}
+{% set openda_config_template_dir = "$CYLC_SUITE_DEF_PATH/openda_configs/template_30min" %}
 

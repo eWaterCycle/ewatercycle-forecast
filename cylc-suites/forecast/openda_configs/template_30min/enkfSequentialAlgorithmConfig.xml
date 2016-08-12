@@ -3,7 +3,7 @@
 	<!-- type="fromObservationTimes", i.e. perform an analysis at each time for which the stochObserver has observations -->
 	<!-- continueWithoutObservation="true", i.e. continue running until model endTime, even after the last observation time -->
 	<analysisTimes type="fromObservationTimes" continueWithoutObservation="true"/>
-    <ensembleSize>5</ensembleSize>
+    <ensembleSize>{{ ensemble_member_count }}</ensembleSize>
     <localization>hamill</localization>
     <distance>100000</distance> 
 </EnkfConfig>

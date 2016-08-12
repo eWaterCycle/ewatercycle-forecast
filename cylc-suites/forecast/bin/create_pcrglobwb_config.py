@@ -6,8 +6,8 @@ import shutil
 from jinja2 import Environment, FileSystemLoader
 
 
-#Generate PCRGlob-WB configuration by doing a simple search-and-replace on a configuration template.
-#Uses jinja 2 for processing
+# Generate PCRGlob-WB configuration by doing a simple search-and-replace on a configuration template.
+# Uses jinja 2 for processing
 
 #input template (set in environment by Cylc)
 config_template=os.getenv('PCRGLOBWB_CONFIG_TEMPLATE')

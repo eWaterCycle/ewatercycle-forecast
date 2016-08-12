@@ -4,7 +4,7 @@
 # Copies all needed files into the workdir of this job, then calls openda
 
 #stop the script if we use an unset variable, or a command fails
-
+set -o nounset -o errexit
 
 #copy openda config to current working directory
 OPENDA_CONFIG_DIR=$IO_DIR/forecast/openda_config
@@ -23,10 +23,9 @@ mkdir model_template
 PCRGLOBWB_CONFIG=$IO_DIR/forecast/pcrglobwb_config.ini
 cp $PCRGLOBWB_CONFIG model_template
 
-#FIXME:remove
-cp /home/niels/restart201608080000.zip openda_config/
-
-for ensembleMember in {0..20}
+#As this for loop runs up to _and_including_ the given value, we
+#Get an additional member (0) for the main OpenDA model
+for ensembleMember in {0..$ENSEMBLE_MEMBER_COUNT}
 do
     #also create a padded version of the number
     printf -v ensembleMemberPadded '%02d' $ensembleMember
@@ -45,8 +44,8 @@ do
     PRECIPITATION_FILE=$IO_DIR/preprocess/ensemble/precipEnsMem$ensembleMemberPadded.nc
     TEMPERATURE_FILE=$IO_DIR/preprocess/ensemble/tempEnsMem$ensembleMemberPadded.nc
 
-    #Emsemble member 0 (the middle-of-the-road member) does not have its own forcings.
-    #Borrow forcings from member 1
+    #Ensemble member 0 (the main model in OpenDA terms) does not need its own forcings as it is not actually run.
+    #Borrow forcing files from member 01 so the model does not complain about lack of forcing files
     if [[ "$ensembleMember" -eq "0" ]]
     then
         PRECIPITATION_FILE=$IO_DIR/preprocess/ensemble/precipEnsMem01.nc
@@ -75,5 +74,3 @@ cd $OPENDADIR
 # - Does not set LD_LIBRARY_PATH (causing conflics as it contains a lot of basic libraries such as sqlite and netcdf)
 # - Sets java.library.path to still have native libraries available to OpenDA
 oda_run_console.sh $WORKDIR/openda_config/enkf-seq-threaded.oda
-
-
