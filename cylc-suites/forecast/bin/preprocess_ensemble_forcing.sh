@@ -42,11 +42,19 @@ cdo ensmean tempEnsMem??.grib2 tempEnsMeanOut.grib2
 
 #for each ensemble member, calculate diff from mean, upscale to high res and add 
 #for details on operations done see the deterministic preprocessing script
+#finally, the files are interpolated (re-mapped) to the resolution of {MODEL_GRID_MASK},
+#which is of the resolution of the model.
+
 for ensembleMember in {01..20}
 do
-    cdo -f nc setrtoc,-100,0.0,0.0 -add forcingPrecipDailyOut.nc -remapnn,forcingPrecipDailyOut.nc -setmissval,1.0E20 -setname,precipitation -daysum -settime,00:00:00 -mulc,0.001 -sub precipEnsMem${ensembleMember}.grib2 precipEnsMeanOut.grib2 precipEnsMem${ensembleMember}.nc
+    cdo -f nc setrtoc,-100,0.0,0.0 -add forcingPrecipDailyOut.nc -remapnn,forcingPrecipDailyOut.nc -setmissval,1.0E20 -setname,precipitation -daysum -settime,00:00:00 -mulc,0.001 -sub precipEnsMem${ensembleMember}.grib2 precipEnsMeanOut.grib2 GFSResPrecipEnsMem${ensembleMember}.nc
 
-    cdo -f nc add forcingTempDailyOut.nc -remapnn,forcingTempDailyOut.nc -setmissval,1.0E20 -setname,temperature -settime,00:00:00 -setunit,C -dayavg -sub tempEnsMem${ensembleMember}.grib2 tempEnsMeanOut.grib2 tempEnsMem${ensembleMember}.nc
+    cdo -f nc remapbil,${MODEL_GRID_MASK} GFSResPrecipEnsMem${ensembleMember}.nc precipEnsMem${ensembleMember}.nc
+
+    cdo -f nc add forcingTempDailyOut.nc -remapnn,forcingTempDailyOut.nc -setmissval,1.0E20 -setname,temperature -settime,00:00:00 -setunit,C -dayavg -sub tempEnsMem${ensembleMember}.grib2 tempEnsMeanOut.grib2 GFSResTempEnsMem${ensembleMember}.nc
+
+    cdo -f nc remapbil,${MODEL_GRID_MASK} GFSResTempEnsMem${ensembleMember}.nc tempEnsMem${ensembleMember}.nc
+
 done
 
 # copy output to shared folder
