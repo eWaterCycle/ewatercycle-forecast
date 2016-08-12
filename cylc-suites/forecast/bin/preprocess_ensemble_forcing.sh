@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# eWaterCycle preprocessing script for gfs deterministic forcing
+# eWaterCycle preprocessing script for gefs ensemble forcing
 #
 # uses environment variables:
 #     IO_DIR, for input and output directory for this cycle point
