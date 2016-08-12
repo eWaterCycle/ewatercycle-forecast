@@ -10,6 +10,10 @@
 {% set initial_cycle_point = "2016-08-08" %}
 {% set final_cycle_point = "2016-08-09" %}
 
+#How many ensemble members to use. Note: 21 is the only really valid value, as there are 21
+#GEFS ensemble members. Anything else only to be used for testing.
+%{ set ensemble_member_count = 21 %}
+
 #Where to get the initial state from at the initial cycle point
 #Bootstrap will fail when the previous day output state already exists.
 #Bootstrap step can then simply be skipped to continue
