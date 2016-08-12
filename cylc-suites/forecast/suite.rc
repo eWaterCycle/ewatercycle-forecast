@@ -120,7 +120,7 @@ UTC mode = True
         script = create_openda_config.py
 
         [[[environment]]]
-            CONFIG_TEMPLATE_DIR = $CYLC_SUITE_DEF_PATH/openda_configurations/openda_config_template_05
+            CONFIG_TEMPLATE_DIR = $CYLC_SUITE_DEF_PATH/openda_configurations/openda_config_template_30
 
     [[run_forecast]]
         script = run_forecast.sh
