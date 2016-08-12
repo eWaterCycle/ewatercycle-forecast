@@ -2,17 +2,6 @@
 <blackBoxStochModel xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxStochModelConfig.xsd">
     <modelFactory className="org.openda.model_bmi.BmiModelFactory" workingDirectory=".">
         <arg>PCRGlobWB_ModelFactoryConfig.xml</arg>
-        <!--
-
-		<arg>/hpc/sw/python-2.7.8/bin/python</arg>
-		<arg>/home/ndrost/workspace/eWaterCycle-openda_bmi_python</arg>
-		<arg>/home/ndrost/workspace/PCR-GLOBWB/model</arg>
-		<arg>bmiPcrglobwb</arg>
-		<arg>ScaledBmiPCRGlobWB</arg>
-		<arg>MODELRUNDIR</arg>
-		<arg>PCRGLOBINIFILE</arg>
-        <arg>HOSTS</arg>-->
-
 	</modelFactory>
 	<vectorSpecification>
 		<state>

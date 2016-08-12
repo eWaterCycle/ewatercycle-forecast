@@ -5,7 +5,7 @@
 # uses environment variables:
 #     IO_DIR, for input and output directory for this cycle point
 #     ISO_DATE and ISO_DATE_EXT, for date to process
-#     MODEL_GRID_MASK for size of grid to resize observations to, and mask to use (no need for input at point for which there is no model (e.g. oceans)
+#     MODEL_GRID for definition of grid to resize forcings to, so that it is equal to the model grid
 
 #stop the script if we use an unset variable, or a command fails
 set -o nounset -o errexit
@@ -49,11 +49,11 @@ for ensembleMember in {01..20}
 do
     cdo -f nc setrtoc,-100,0.0,0.0 -add forcingPrecipDailyOut.nc -remapnn,forcingPrecipDailyOut.nc -setmissval,1.0E20 -setname,precipitation -daysum -settime,00:00:00 -mulc,0.001 -sub precipEnsMem${ensembleMember}.grib2 precipEnsMeanOut.grib2 GFSResPrecipEnsMem${ensembleMember}.nc
 
-    cdo -f nc remapbil,${MODEL_GRID_MASK} GFSResPrecipEnsMem${ensembleMember}.nc precipEnsMem${ensembleMember}.nc
+    cdo -f nc remapbil,${MODEL_GRID} GFSResPrecipEnsMem${ensembleMember}.nc precipEnsMem${ensembleMember}.nc
 
     cdo -f nc add forcingTempDailyOut.nc -remapnn,forcingTempDailyOut.nc -setmissval,1.0E20 -setname,temperature -settime,00:00:00 -setunit,C -dayavg -sub tempEnsMem${ensembleMember}.grib2 tempEnsMeanOut.grib2 GFSResTempEnsMem${ensembleMember}.nc
 
-    cdo -f nc remapbil,${MODEL_GRID_MASK} GFSResTempEnsMem${ensembleMember}.nc tempEnsMem${ensembleMember}.nc
+    cdo -f nc remapbil,${MODEL_GRID} GFSResTempEnsMem${ensembleMember}.nc tempEnsMem${ensembleMember}.nc
 
 done
 

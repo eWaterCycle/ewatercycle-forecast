@@ -29,5 +29,9 @@
 		<configFile>output.log.m</configFile>
 	</resultWriter>
 -->	
+
+    <restartInFile>restart201608080000.zip</restartInFile>
+    <restartOutFilePrefix>restart</restartOutFilePrefix>
+    <restartOutFileTimes>201608080000</restartOutFileTimes>
 	
 </openDaApplication>

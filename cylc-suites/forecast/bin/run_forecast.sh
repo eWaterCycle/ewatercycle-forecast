@@ -23,6 +23,9 @@ mkdir model_template
 PCRGLOBWB_CONFIG=$IO_DIR/forecast/pcrglobwb_config.ini
 cp $PCRGLOBWB_CONFIG model_template
 
+#FIXME:remove
+cp /home/niels/restart201608080000.zip openda_config/
+
 for ensembleMember in {0..20}
 do
     #also create a padded version of the number
@@ -58,7 +61,12 @@ done
 #remember workdir
 WORKDIR=$PWD
 
-#start openda (assumes you have already setup openda previously)
+#set openda variables (as per install instructions)
+export OPENDADIR=$OPENDA_LOCATION
+export PATH=$OPENDADIR:$PATH
+export OPENDA_NATIVE=linux64_gnu
+export OPENDALIB=$OPENDADIR/$OPENDA_NATIVE/lib
+
 cd $OPENDADIR
 
 #We use a modified version of oda_run that:
