@@ -21,7 +21,7 @@ UTC mode = True
         [[[P1D]]] # Main forecast workflow 
             graph = """
                 #the forecast depends on initial state from the previous forecast (written in create_result)
-                create_result[-P1D] => load_initial_state
+                save_state[-P1D] => load_initial_state
                 load_initial_state => run_forecast
 
                 #we use high-res gfs forcings
@@ -40,9 +40,10 @@ UTC mode = True
                 create_pcrglobwb_config => run_forecast
                 create_openda_config => run_forecast
 
-                #after the forecast, we create the final output, and archive/upload
-                run_forecast => create_result => archive_cycle
-                create_result => upload_result
+                #after the forecast, we create the final output, save state, upload_output, and archive
+                run_forecast => create_result => upload_result
+                run_forecast => save_state => archive_cycle
+                create_result => archive_cycle
             """
 
 [runtime]
@@ -139,7 +140,7 @@ UTC mode = True
 
         [[[environment]]]
             OPENDA_CONFIG_TEMPLATE_DIR = {{ openda_config_template_dir }}
-            STATE_WRITE_TIME = ${ISO_DATE_EXT}0000
+            STATE_WRITE_TIME = ${ISO_DATE}0000
 
     [[run_forecast]]
         script = run_forecast.sh
@@ -149,9 +150,26 @@ UTC mode = True
             OPENDA_DIR = {{ openda_dir }}
 
     [[POSTPROCESS]]
-    [[create_result, upload_result, archive_cycle]]
+    [[create_result, upload_result, save_state, archive_cycle]]
         inherit = POSTPROCESS
 
+    [[create_result]]
+        script = create_result.sh
+
+        [[[environment]]]
+            UNCERTAINTY_TEMPLATE_FILE = $CYLC_SUITE_DEF_PATH/misc/uncertaintyTemplate.nc
+
+    [[save_state]]
+        script = save_state.sh
+
+    [[upload_result]]
+        script = upload_result.sh
+
+    [[archive_cycle]]
+        script = archive_cycle.sh
+
+        [[[environment]]]
+            ARCHIVE_DIR = {{ archive_dir }}
 
 [visualization]
     default node attributes = "style=filled", "shape=ellipse"

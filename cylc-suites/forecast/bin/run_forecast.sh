@@ -25,7 +25,7 @@ cp $PCRGLOBWB_CONFIG model_template
 
 #As this for loop runs up to _and_including_ the given value, we
 #Get an additional member (0) for the main OpenDA model
-for ensembleMember in {0..$ENSEMBLE_MEMBER_COUNT}
+for ensembleMember in $(seq 0 $ENSEMBLE_MEMBER_COUNT)
 do
     #also create a padded version of the number
     printf -v ensembleMemberPadded '%02d' $ensembleMember
@@ -61,11 +61,12 @@ done
 WORKDIR=$PWD
 
 #set openda variables (as per install instructions)
-export OPENDADIR=$OPENDA_LOCATION
+export OPENDADIR=$OPENDA_DIR/bin
 export PATH=$OPENDADIR:$PATH
 export OPENDA_NATIVE=linux64_gnu
 export OPENDALIB=$OPENDADIR/$OPENDA_NATIVE/lib
 
+#Workdir needs to be openda bin dir for OpenDA to work properly
 cd $OPENDADIR
 
 #We use a modified version of oda_run that:
@@ -73,4 +74,38 @@ cd $OPENDADIR
 # - Prints to the console instead of to a logfile
 # - Does not set LD_LIBRARY_PATH (causing conflics as it contains a lot of basic libraries such as sqlite and netcdf)
 # - Sets java.library.path to still have native libraries available to OpenDA
-oda_run_console.sh $WORKDIR/openda_config/enkf-seq-threaded.oda
+oda_run_console.sh $WORKDIR/openda_config/ewatercycle.oda
+
+
+#retore original workdir
+cd $WORKDIR
+
+
+#copy output to shared dir for further processing
+
+OUTPUT_DIR=$IO_DIR/forecast/forecast
+
+#make sure we get a clean output dir
+rm -rf $OUTPUT_DIR
+mkdir $OUTPUT_DIR
+
+for ensembleMember in $(seq 0 $ENSEMBLE_MEMBER_COUNT)
+do
+
+    #also create a padded version of the number
+    printf -v ensembleMemberPadded '%02d' $ensembleMember
+
+    if [[ "$ensembleMember" -ne "0" ]]
+    then
+        #copy result. Do not copy result of member 0 as it produces no valid output
+        cp work${ensembleMember}/output/netcdf/discharge_dailyTot_output.nc $OUTPUT_DIR/member${ensembleMemberPadded}-discharge_dailyTot_output.nc
+    fi
+
+    OUT_STATE_DIR=$OUTPUT_DIR/out-state/state-member${ensembleMemberPadded}/
+    mkdir -p $OUT_STATE_DIR
+
+    cp work${ensembleMember}/output_state/* $OUT_STATE_DIR
+
+done
+
+
