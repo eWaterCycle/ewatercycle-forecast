@@ -3,12 +3,14 @@
 import os
 import sys
 import shutil
+from jinja2 import Environment, FileSystemLoader
 
-#Generate PCRGlob-WB configuration by doing a simple search-and-replace on a configuration template.
-#Crude but effective, should be adaptable to work for most models.
+
+# Generate PCRGlob-WB configuration by doing a simple search-and-replace on a configuration template.
+# Uses jinja 2 for processing
 
 #input template (set in environment by Cylc)
-config_template=os.getenv('CONFIG_TEMPLATE')
+config_template=os.getenv('PCRGLOBWB_CONFIG_TEMPLATE')
 
 if config_template is None:
     print "ERROR: configuration template not defined"
@@ -21,35 +23,35 @@ if not os.path.isdir(io_dir):
     print "IO dir does not exist"
     exit(1)
 
-result_file = 'pcrglobwb_config.ini'
-
-#values in templates that can be replaced. Some actually a constant here, some set from Cylc.
-inputdirectory=os.getenv('INPUTDIR')
-outputdirectory="output"
-starttime=os.getenv('STARTTIME')
-endtime=os.getenv('ENDTIME')
-precipitationfile="precipitation.nc"
-temperaturefile="temperature.nc"
-initialconditionsdir="initial"
+template_dir, template_file = os.path.split(config_template)
 
 #dict with all replacements
-replacements = {'INPUTDIR':inputdirectory,'OUTPUTDIR':outputdirectory, 'STARTTIME':starttime, 'ENDTIME':endtime, 'PRECIPITATIONFILE':precipitationfile, 'TEMPERATUREFILE':temperaturefile, 'INITIALCONDITIONSDIR':initialconditionsdir}
+replacements = {
+    'hydroworld_location':os.getenv('HYDROWORLD_LOCATION'),
+    'outputdir': "output",
+    'starttime': os.getenv('STARTTIME'),
+    'endtime':os.getenv('ENDTIME'),
+    'precipitationfile':"precipitation.nc",
+    'temperaturefile':"temperature.nc",
+    'initial_conditions_dir':"initial"
+}
 
-infile = open(config_template)
-outfile = open(result_file, 'w')
+environment = Environment(loader=FileSystemLoader(template_dir))
 
-#replace each replacement in turn for each line
-for line in infile:
-    for src, target in replacements.iteritems():
-        if target is None:
-            print "ERROR: %s was not defined" % src
-            sys.exit(1)
-        line = line.replace(src, target)
-    outfile.write(line)
-infile.close()
-outfile.close()
+result_string = environment.get_template(template_file).render(replacements)
 
+# print "##### START RESULTING CONFIGURATION #####"
+# print result_string
+# print "##### END RESULTING CONFIGURATION #####"
+
+result_filename = 'pcrglobwb_config.ini'
+
+# First write content to file then copy file is less efficient, but more robust,
+# and leaves a copy of the output in the workdir of this job for debugging
+result_file = open(result_filename, 'w')
+result_file.write(result_string)
+result_file.close()
 
 #copy output to final output folder
 io_output_dir = os.path.join(io_dir, 'forecast')
-shutil.copy(result_file, io_output_dir)
+shutil.copy(result_filename, io_output_dir)

@@ -6,7 +6,7 @@
 	</uncertaintyModule>
 	<!-- tell OpenDA to read observations from a NetCDF file -->
 	<ioObject workingDirectory="." className="org.openda.exchange.dataobjects.NetcdfDataObject">
-		<fileName>OBSERVATIONFILENAME</fileName>
+		<fileName>h14_observations.nc</fileName>
 		<!-- argument "lazyReading" = true, i.e. do not store values in memory, read the values from the file at the moment they are asked for. -->
 		<arg>true</arg>
 		<!-- argument "lazyWriting" = false, i.e. do not store values in memory, write the values to the file at the moment they are supplied. -->

@@ -1,0 +1,57 @@
+Index: core/java/src/org/openda/blackbox/wrapper/BBStochModelInstance.java
+===================================================================
+--- core/java/src/org/openda/blackbox/wrapper/BBStochModelInstance.java	(revision 553)
++++ core/java/src/org/openda/blackbox/wrapper/BBStochModelInstance.java	(working copy)
+@@ -993,11 +993,13 @@
+ 
+ 			if (Double.isNaN(value)) {
+ 				errorCount += 1;
++                System.err.println("no value at model index " + i + "which should be at coordinate " + observationXCoordinates.getValue(i) + " , " +  observationYCoordinates.getValue(i));
++                observedModelValues.setValue(i, 0.0);
+ 			}
+ 		}
+ 
+ 		if (errorCount > 0) {
+-			throw new RuntimeException("The model returned missing values for " + errorCount + " observation locations.");
++			System.err.println("The model returned missing values for " + errorCount + " observation locations.");
+ 		}
+ 
+ 		return observedModelValues;
+Index: model_bmi/java/src/org/openda/model_bmi/BmiModelFactory.java
+===================================================================
+--- model_bmi/java/src/org/openda/model_bmi/BmiModelFactory.java	(revision 553)
++++ model_bmi/java/src/org/openda/model_bmi/BmiModelFactory.java	(working copy)
+@@ -143,7 +143,7 @@
+ 
+ 		// remove work directories from previous runs.
+ 		Results.putMessage(getClass().getSimpleName() + ": removing work directories from previous run.");
+-		BBUtils.removeExistingModelInstanceDirectories(this.instanceDirectoryWithoutPostfix);
++		//BBUtils.removeExistingModelInstanceDirectories(this.instanceDirectoryWithoutPostfix);
+ 	}
+ 
+ 	@Override
+@@ -161,7 +161,7 @@
+ 			// create a output directory for this member
+ 			// String workDir = String.format("work%02d", instanceID);
+ 			File instanceDirectory = new File(this.instanceDirectoryWithoutPostfix.getAbsolutePath() + instanceID);
+-			BBUtils.makeDirectoryClone(this.modelTemplateDirectory, instanceDirectory);
++			//BBUtils.makeDirectoryClone(this.modelTemplateDirectory, instanceDirectory);
+ 
+ 			//this code assumes that the current working directory is the OpenDA bin folder.
+ 			//This is reasonable, since OpenDA should always be started from the OpenDA bin folder.
+Index: model_bmi/java/src/org/openda/model_bmi/BmiModelInstance.java
+===================================================================
+--- model_bmi/java/src/org/openda/model_bmi/BmiModelInstance.java	(revision 553)
++++ model_bmi/java/src/org/openda/model_bmi/BmiModelInstance.java	(working copy)
+@@ -174,6 +174,11 @@
+ 	private Map<String, DoublesExchangeItem> createBufferedExchangeItems(ITime[] bufferTimes) throws BMIModelException {
+ 		Map<String, DoublesExchangeItem> result = new HashMap<String, DoublesExchangeItem>();
+ 
++        //TODO: not sure what this corner case means - Niels D
++        if (bufferTimes == null) {
++            return result;
++        }
++
+ 		// ITime has no double[] getTimes?
+ 		double[] selectedTimes = new double[bufferTimes.length];
+ 		for (int i = 0; i < bufferTimes.length; i++) {

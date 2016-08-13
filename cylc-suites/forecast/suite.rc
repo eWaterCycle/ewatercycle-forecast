@@ -1,11 +1,17 @@
+#!jinja2
+%include settings.rc
+
+#User-settable variables (locations of data files and such) are in the settings.rc file included above
+#These appear in this suite.rc file as for example: {{ initial_cycle_point }} 
+
 title = "eWaterCycle Forecast"
+
 [cylc]
-#    cycle point format = %Y-%m-%d
 UTC mode = True
 
 [scheduling]
-    initial cycle point = 2016-08-08
-    final cycle point = 2016-08-09
+    initial cycle point = {{ initial_cycle_point }}
+    final cycle point = {{ final_cycle_point }}
     [[special tasks]]
         clock-trigger = download_gfs(PT2H), download_gefs(PT2H), download_hsaf(PT10H)
     [[dependencies]]
@@ -15,7 +21,7 @@ UTC mode = True
         [[[P1D]]] # Main forecast workflow 
             graph = """
                 #the forecast depends on initial state from the previous forecast (written in create_result)
-                create_result[-P1D] => load_initial_state
+                save_state[-P1D] => load_initial_state
                 load_initial_state => run_forecast
 
                 #we use high-res gfs forcings
@@ -34,14 +40,18 @@ UTC mode = True
                 create_pcrglobwb_config => run_forecast
                 create_openda_config => run_forecast
 
-                #after the forecast, we create the final output, and archive/upload
-                run_forecast => create_result => archive_cycle
-                create_result => upload_result
+                #after the forecast, we create the final output, save state, upload_output, and archive
+                run_forecast => create_result => upload_result
+                run_forecast => save_state => archive_cycle
+                create_result => archive_cycle
             """
 
 [runtime]
     [[root]]  # Inherited by all tasks.
+        #Default script will fail to catch unset task scripts
         script = fail.sh
+
+        #Pre-script cleans working directory for the tasks, creates shared IO directory.
         pre-script = pre-script.sh
         [[[environment]]]
             #Date formats used in almost all scripts
@@ -55,10 +65,11 @@ UTC mode = True
         script = bootstrap_initial_state.sh
 
         [[[environment]]]
-            #some file, probably needs to be adjusted
-            BOOTSTRAP_INITIAL_STATE_FILE = $HOME/ewatercycle_initial_state.tar.gz
+            #Initial state file. Should match initial cycle point.
+            BOOTSTRAP_INITIAL_STATE_FILE = {{ bootstrap_initial_state_file }}
 
-            #state file that would have been written by previous cycl
+            #State file that would have been written by previous cycle, and is now
+            #Written using this special bootstrap task
             REFERENCE_INITIAL_STATE_DIR=$CYLC_SUITE_SHARE_DIR/$REFERENCE_CYCLE/postprocess
             REFERENCE_INITIAL_STATE_FILE=$REFERENCE_INITIAL_STATE_DIR/state.tar.gz
 
@@ -72,7 +83,7 @@ UTC mode = True
         script = download_hsaf.sh
         [[[environment]]]
             #load credentials from file (format should be e.mail%40domain.com:p3ssw3rd)
-            CREDENTIALS = $(cat ~/.hsaf_credentials)
+            CREDENTIALS = $(cat {{ hsaf_credential_file }} )
 
     [[download_gfs]]
         script = download_gfs.sh
@@ -83,17 +94,22 @@ UTC mode = True
     [[PREPROCESS]]
     [[preprocess_deterministic_forcing, preprocess_ensemble_forcing, preprocess_observations, load_initial_state]]
         inherit = PREPROCESS
-        [[[environment]]]
-            MODEL_GRID_MASK = $CYLC_SUITE_DEF_PATH/grids/30min.grid.model.mask.nc
 
     [[preprocess_observations]]
         script = preprocess_observations.sh
+
+        [[[environment]]]
+            OBSERVATION_MASK = {{ observation_mask }}
+            OBSERVATION_TARGET_GRID = {{ observation_target_grid }}
 
     [[preprocess_deterministic_forcing]]
         script = preprocess_deterministic_forcing.sh
 
     [[preprocess_ensemble_forcing]]
         script = preprocess_ensemble_forcing.sh
+
+        [[[environment]]]
+            MODEL_GRID = {{ model_grid }}
 
     [[load_initial_state]]
         script = load_initial_state.sh
@@ -105,33 +121,56 @@ UTC mode = True
     [[create_pcrglobwb_config, create_openda_config, run_forecast]]
         inherit = FORECAST
 
+        [[[environment]]]
+            ENSEMBLE_MEMBER_COUNT = {{ ensemble_member_count }}
+
     [[create_pcrglobwb_config]]
         script = create_pcrglobwb_config.py
 
         [[[environment]]]
-            CONFIG_TEMPLATE = $CYLC_SUITE_DEF_PATH/pcrglobwb_config_templates/default-30min.ini
+            PCRGLOBWB_CONFIG_TEMPLATE = {{ pcrglobwb_config_template }}
             STARTTIME = $ISO_DATE_EXT
             ENDTIME = $(cylc util cycletime --offset-days=8 --template=CCYY-MM-DD)
 
             #this location should vary from one installation to the next
-            INPUTDIR = $HOME/hydroworld
+            HYDROWORLD_LOCATION = {{ hydroworld_location }}
 
     [[create_openda_config]]
         script = create_openda_config.py
 
         [[[environment]]]
-            CONFIG_TEMPLATE_DIR = $CYLC_SUITE_DEF_PATH/openda_configurations/openda_config_template_05
+            OPENDA_CONFIG_TEMPLATE_DIR = {{ openda_config_template_dir }}
+            STATE_WRITE_TIME = ${ISO_DATE}0000
+            MODEL_HOSTS = {{ model_hosts }}
 
     [[run_forecast]]
         script = run_forecast.sh
 
         [[[environment]]]
-        PCRGLOBWB_MODEL_DIR = $HOME/ewatercycle/PCR-GLOBWB
+            PCRGLOBWB_MODEL_DIR = {{ pcrglobwb_model_dir }}
+            OPENDA_DIR = {{ openda_dir }}
 
     [[POSTPROCESS]]
-    [[create_result, upload_result, archive_cycle]]
+    [[create_result, upload_result, save_state, archive_cycle]]
         inherit = POSTPROCESS
 
+    [[create_result]]
+        script = create_result.sh
+
+        [[[environment]]]
+            UNCERTAINTY_TEMPLATE_FILE = $CYLC_SUITE_DEF_PATH/misc/uncertaintyTemplate.nc
+
+    [[save_state]]
+        script = save_state.sh
+
+    [[upload_result]]
+        script = upload_result.sh
+
+    [[archive_cycle]]
+        script = archive_cycle.sh
+
+        [[[environment]]]
+            ARCHIVE_DIR = {{ archive_dir }}
 
 [visualization]
     default node attributes = "style=filled", "shape=ellipse"

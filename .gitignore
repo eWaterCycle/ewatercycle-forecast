@@ -66,3 +66,6 @@ passphrase
 
 #Cylc processed files
 *.rc.processed
+
+#Suite settings file
+cylc-suites/forecast/settings.rc

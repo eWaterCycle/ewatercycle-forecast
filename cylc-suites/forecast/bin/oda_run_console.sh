@@ -20,14 +20,15 @@ if [ -z "$OPENDADIR" ];then
    echo "OPENDADIR not set! Run settings_local.sh to fix this"
    exit 1;
 fi
-if [ ! -z "$OPENDALIB" ]; then
-   echo "setting path for OPENDALIB"
-   export LD_LIBRARY_PATH=$OPENDALIB:$LD_LIBRARY_PATH
-fi
+
+#if [ ! -z "$OPENDALIB" ]; then
+#   echo "setting path for OPENDALIB"
+#   export LD_LIBRARY_PATH=$OPENDALIB:$LD_LIBRARY_PATH
+#fi
 
 # java options
 if [ -z "$ODA_JAVAOPTS" ]; then
-	export ODA_JAVAOPTS='-Xmx1024m'
+	export ODA_JAVAOPTS="-Xmx1024m -Djava.library.path=$OPENDALIB"
 fi
 
 # append all jars in opendabindir to java classpath

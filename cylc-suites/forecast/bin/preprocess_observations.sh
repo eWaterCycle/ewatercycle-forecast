@@ -20,8 +20,8 @@ bunzip2 h14_${ISO_DATE}_0000.grib.bz2
 #convert to NetCDF using ncl_convert2nc
 ncl_convert2nc h14_${ISO_DATE}_0000.grib
 
-#scale, set correct time, date and calender
-cdo ifthen ${MODEL_GRID_MASK} -remapbil,${MODEL_GRID_MASK} -settime,00:00:00 -setdate,${ISO_DATE_EXT} -setcalendar,standard h14_${ISO_DATE}_0000.nc h14_${ISO_DATE}.nc
+#scale, set correct time, date and calender, mask unwanted observations (e.g. for which there is no model)
+cdo ifthen ${OBSERVATION_MASK} -remapbil,${OBSERVATION_TARGET_GRID} -settime,00:00:00 -setdate,${ISO_DATE_EXT} -setcalendar,standard h14_${ISO_DATE}_0000.nc h14_${ISO_DATE}.nc
 
 #copy output to shared I/O dir
 

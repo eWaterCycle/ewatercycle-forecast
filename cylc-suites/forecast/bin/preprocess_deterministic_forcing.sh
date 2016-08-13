@@ -5,7 +5,6 @@
 # uses environment variables:
 #     IO_DIR, for input and output directory for this cycle point
 #     ISO_DATE and ISO_DATE_EXT, for date to process
-#     MODEL_GRID_MASK for size of grid to resize observations to, and mask to use (no need for input at point for which there is no model (e.g. oceans)
 
 #stop the script if we use an unset variable, or a command fails
 set -o nounset -o errexit
