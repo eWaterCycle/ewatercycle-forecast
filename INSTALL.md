@@ -49,7 +49,7 @@ The GEFS weather forecast is downloaded automatically by the pre-processor and n
 The SM-DAS soil moisture observations are also downloaded automatically. However, one has to register with HSAF to be allowed to download the data. To register, follow the stept on [http://hsaf.meteoam.it/user-registration.php](http://hsaf.meteoam.it/user-registration.php). The username and password provided to you are needed in the installation step, below.
 
 ### PCRGlobWB input
-When running PCRGlobWB globally, the input files needed can be downloaded from FOOBAR SITE. 
+When running PCRGlobWB globally, the input files needed can be downloaded from the [UU-Hydro GitHub organization](github.com/uu-Hydro/) page.
 
 ## running eWaterCycle
 
