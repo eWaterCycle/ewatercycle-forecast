@@ -1,7 +1,7 @@
 # Install Guide for eWaterCycle
 
 ## Prerequisites
-eWaterCycle is a system build from pre-exisiting open source components. To run the eWaterCycle system, each of these components will have to be installed on your local hardware. First, all pre-requisite software and libraries need to be installed.
+eWaterCycle is a system build from pre-existing open source components. To run the eWaterCycle system, each of these components will have to be installed on your local hardware. First, all pre-requisite software and libraries need to be installed.
 
 On machines running Ubuntu 16.04, the following packages are available in the package management system:
 - Python
@@ -22,7 +22,7 @@ PCRaster uses the Geospatial Data Abstraction Library (GDAL). To install GDAL, g
 
 ### OpenDA (with some patches)
 
-The eWaterCycle uses a slighly patched version of OpenDA, the Open Data Assimilation toolbox. See http://openda.org for more information and documentation on OpenDA, see the openda folder in this repo for the patches needed.
+The eWaterCycle uses a slightly patched version of OpenDA, the Open Data Assimilation toolbox. See http://openda.org for more information and documentation on OpenDA, see the openda folder in this repo for the patches needed.
 
 #### Java
 OpenDA does requires Java to present on your computer. If not already installed, install java via https://java.com/en/download/
@@ -53,12 +53,12 @@ When running PCRGlobWB globally, the input files needed can be downloaded from F
 
 ## running eWaterCycle
 
-The main ewatercycle (this repo) includes all the neccesairy scripts to run the eWaterCycle forecast. Using Cylc, register the suite in cylc-suites/forecast. You will also need to create a settings.rc file there. There is an settings.rc.example file included that should already suffice for most users. This settings files assumes all needed data and software is present in a "ewatercycle" folder in the users home dir:
+The main ewatercycle (this repo) includes all the necessary scripts to run the eWaterCycle forecast. Using Cylc, register the suite in cylc-suites/forecast. You will also need to create a settings.rc file there. There is an settings.rc.example file included that should already suffice for most users. This settings files assumes all needed data and software is present in a "ewatercycle" folder in the users home dir:
 
 - initial_state.tar.gz file with initial conditions for the first forecast day
 - openda
 - PCRGlobWB
-- hydroworld dataset (containing parameter files used by PCRGlobWB)
+- Hydroworld dataset (containing parameter files used by PCRGlobWB)
 
 In addition, the hsaf credentials should be put in a file containing a single line with format e.mail%40domain.com:p3ssw3rd. The default location for this file is $HOME/.hsaf_credentials
 
