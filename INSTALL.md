@@ -11,7 +11,7 @@ On machines running Ubuntu 16.04, the following packages are available in the pa
 - NCL
 - NCO
 
-### PCRGlobWB (custom version?) (inc. GDAL)
+### PCRGlobWB (inc. GDAL)
 The PCRGlobWB hydrological model at the core of eWaterCycle is written in python. For PCRGlobWB to run first python, PCRaster and GDAL need to be installed.
 #### python
 PCRGlobWB and PCRaster require python version 2.7. Install Python from https://www.python.org/
