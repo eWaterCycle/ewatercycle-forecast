@@ -1,3 +1,5 @@
+## About this patch
+
 This folder contains a small patch for OpenDA to make it compatible with eWaterCycle. All of these should be handled better than the oneliner workarounds we introduced. Thus, we keep them here as a patch. This patch should not be needed in a (near) future version of the eWaterCycle software, we hope.
 
 The patch was created against revision 553 of the OpenDA svn repo ( https://svn.oss.deltares.nl/repos/openda/trunk )
@@ -9,7 +11,7 @@ Changes:
 - The BMI Model Buffer Exchange items suffer from a NullPointerExceptioni, most likely as the model is run after the last DA step.
 
 
-Obtaining the OpenDA
+## Obtaining OpenDA
 
 OpenDA can be downloaded from openda.org (create an account for svn access)
 
@@ -22,4 +24,4 @@ $ patch -p0 < ~/ewatercycle/ewatercycle/openda/openda.patch
 $ ant build
 ```
 
-The patched version is also available in Zenodo at 
+The patched version is also available in Zenodo at http://dx.doi.org/10.5281/zenodo.60077
