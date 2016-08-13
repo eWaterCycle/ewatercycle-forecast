@@ -5,8 +5,8 @@
 
 ## General ##
 
-# Which forecast cycles to run (one per day).
-# Will pause automatically for any date in the future.
+#Which forecast cycles to run (one per day).
+#Will pause automatically for any date in the future.
 {% set initial_cycle_point = "2016-08-08" %}
 {% set final_cycle_point = "2016-08-09" %}
 
@@ -15,45 +15,48 @@
 # we do not use). Anything else only to be used for testing.
 {% set ensemble_member_count = "20" %}
 
-# Where to get the initial state from at the initial cycle point
-# Bootstrap will fail when the previous day output state already exists.
-# Bootstrap step can then simply be skipped to continue
+#Where to get the initial state from at the initial cycle point
+#Bootstrap will fail when the previous day output state already exists.
+#Bootstrap step can then simply be skipped to continue
 {% set bootstrap_initial_state_file = "$HOME/ewatercycle/initial_state.tar.gz" %}
 
-# Where to archive the result of the forecast, including raw downloaded
-# files and intermedate results.
+#Where to archive the result of the forecast, including raw downloaded files and intermedate results.
 {% set archive_dir = "$HOME/ewatercycle/archive" %}
 
+#Comma-seperated list of hosts to use for running the model. Assumes ssh passwordless login,
+#and a shared filesystem with the main node running Cylc.
+#Using the cylc build-in remote execution method is currently not supported
+{% set model_hosts = "" %}
 
 ## Forcing and Observations ##
 
-# hsaf credentials file (format should be e.mail%40domain.com:p3ssw3rd)
+#hsaf credentials file (format should be e.mail%40domain.com:p3ssw3rd)
 {% set hsaf_credential_file = "$HOME/.hsaf_credentials" %}
 
-# The observations are masked to get rid of observations at point for which
-# there is no model, and (if needed) scaled to reduce the number of observations
-# and thus memory and cpu requirements.
+#The observations are masked to get rid of observations at point for which
+#there is no model, and (if needed) scaled to reduce the number of observations
+#and thus memory and cpu requirements.
 {% set observation_mask = "$CYLC_SUITE_DEF_PATH/grids/30min.grid.model.mask.nc" %}
 {% set observation_target_grid = "$CYLC_SUITE_DEF_PATH/grids/30min.grid.txt" %}
 
-# Grid of the model. Used to rescale the forcing.
+#Grid of the model. Used to rescale the forcing.
 {% set model_grid = "$CYLC_SUITE_DEF_PATH/grids/30min.grid.txt" %}
 
 ## PCRGlobWB ##
 
-# Model install location
+#Model install location
 
 {% set pcrglobwb_model_dir = "$HOME/ewatercycle/PCR-GLOBWB" %}
 
-# Location of configuration template
+#Location of configuration template
 {% set pcrglobwb_config_template = "$CYLC_SUITE_DEF_PATH/pcrglobwb_configs/template-30min.ini" %}
 
-# Location of dataset used in PCRGlobWB for parameters
+#Location of dataset used in PCRGlobWB for parameters
 {% set hydroworld_location = "$HOME/ewatercycle/hydroworld" %}
 
 ## OpenDA ##
 
-# lightly patched version of openda (see INSTALL.md)
+#lightly patched version of openda (see INSTALL.md)
 {% set openda_dir = "$HOME/ewatercycle/openda" %}
 
 {% set openda_config_template_dir = "$CYLC_SUITE_DEF_PATH/openda_configs/template_30min" %}
