@@ -141,6 +141,7 @@ UTC mode = True
         [[[environment]]]
             OPENDA_CONFIG_TEMPLATE_DIR = {{ openda_config_template_dir }}
             STATE_WRITE_TIME = ${ISO_DATE}0000
+            MODEL_HOSTS = {{ model_hosts }}
 
     [[run_forecast]]
         script = run_forecast.sh

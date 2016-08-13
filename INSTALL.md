@@ -65,3 +65,5 @@ In addition, the hsaf credentials should be put in a file containing a single li
 The example settings use a low resolution version of the model (30 arc minutes, or about 50km grid cell size). This should allow a user to run the model on a modest workstation. The main requirement is memory, with around 20Gb needed. If there is not enough memory available a simple solution is to reduce the number of ensemble members. Though note that the result will also be of much lower quality in this case.
 
 Once all the needed software and data is there, running the forecast should be relatively straightforward by running the suite using Cylc.
+
+Running the higher resolution model requires a lot more memory. The suite includes the settings file for the higher resolution model. Note that some parts will still use a lower resolution (for instance the data assimilation) due to performance and memory problems.
