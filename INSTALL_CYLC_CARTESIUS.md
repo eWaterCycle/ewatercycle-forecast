@@ -52,7 +52,7 @@ where `${VERSION}` is the version of CYLC installed.
 ### Setting up CYLC on your desktop
 In order to connect to a CYLC suite on cartesius from your desktop, CYLC needs to be installed there as well. The following steps detail how to do this on a linux desktop.
 
-1. Download CYLC and extract. Run make in the extracted directory. Optionally append to the `$PATH` environment variable as discussed above.
+1. Download CYLC and extract. Make sure that the CYLC dependencies are satisfied on your desktop (as this is different for each linux distribution we won't detail it here, please refer to the CYLC documentation). Run make in the extracted directory. Optionally append to the `$PATH` environment variable as discussed above.
 2. If `/usr/bin/env python` links to `python3` on your machine, run the following oneliner in the extracted directory:
 ```
 # change /usr/bin/env python to /usr/bin/env python2 shebang
