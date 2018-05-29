@@ -81,9 +81,6 @@ UTC mode = True
 
     [[download_hsaf]]
         script = download_hsaf.sh
-        [[[environment]]]
-            #load credentials from file (format should be e.mail%40domain.com:p3ssw3rd)
-            CREDENTIALS = $(cat {{ hsaf_credential_file }} )
 
     [[download_gfs]]
         script = download_gfs.sh

@@ -30,8 +30,9 @@
 
 ## Forcing and Observations ##
 
-#hsaf credentials file (format should be e.mail%40domain.com:p3ssw3rd)
-{% set hsaf_credential_file = "$HOME/.hsaf_credentials" %}
+#hsaf credentials should be added to $HOME/.netrc
+#add the following line (where LOGIN and PASSWD should be replaced)
+#'machine ftphsaf.meteoam.it login LOGIN password PASSWD'
 
 #The observations are masked to get rid of observations at point for which
 #there is no model, and (if needed) scaled to reduce the number of observations
